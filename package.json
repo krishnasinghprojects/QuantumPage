@@ -1,0 +1,14 @@
+{
+  "name": "random-page-generator",
+  "version": "1.0.0",
+  "description": "A serverless random page generator using Gemini AI",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
+  "keywords": ["vercel", "serverless", "gemini", "ai", "page-generator"],
+  "author": "",
+  "license": "MIT"
+}

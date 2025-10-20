@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Page</title>
+    <style>
+        :root {
+            --dark-blue: #0A0A2A;
+            --medium-blue: #1A1A4A;
+            --light-blue: #3A3A7A;
+            --text-color-light: #E0E0E0;
+            --text-color-primary: #8AB4F8; /* A vibrant blue for highlights */
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --radial-gradient-start: #0f172a;
+            --radial-gradient-end: #050a1b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Hide scrollbars until content is loaded */
+            background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
+            min-height: 100vh;
+        }
+
+        /* --- LOADER STYLES --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; /* For stacking text and loader */
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(15, 23, 42, 0.8); /* Slightly transparent dark overlay */
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
+            opacity: 1;
+            visibility: visible;
+            color: var(--text-color-light);
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
+        }
+
+        #loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-text {
+            font-family: 'Young Serif', serif;
+            font-size: 3rem;
+            font-weight: 400; /* Young Serif has one weight */
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            color: var(--text-color-primary);
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            animation: dot-animation 1.5s infinite ease-in-out;
+            opacity: 0;
+            font-size: 3rem; /* Match loading text size */
+            color: var(--text-color-primary);
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dot-animation {
+            0%, 20% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-10px); }
+            100% { opacity: 0; transform: translateY(0); }
+        }
+
+        /* --- PROGRESS BAR STYLES --- */
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 10px;
+            background-color: var(--glass-bg);
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
+            border-radius: 10px;
+            transform-origin: left;
+            animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards; /* Simulate a longer, smoother load */
+        }
+
+        @keyframes load-progress {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+
+        /* --- CONTENT FRAME --- */
+        #content-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s; /* Delay appearance */
+        }
+
+        #content-frame.visible {
+            opacity: 1;
+        }
+
+        /* --- ERROR MESSAGE --- */
+        #error-message {
+            color: #f87171;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+            display: none; /* Hidden by default */
+            margin-top: 30px;
+            max-width: 80%;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loading-text">
+            Loading<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div id="error-message"></div>
+    </div>
+
+    <iframe id="content-frame" title="Generated Content"></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- CONFIGURATION ---
+            const PROMPT = `
+You are an elite web developer with a flair for creative and minimalist design.
+Your mission is to generate a single, self-contained HTML file for a small, interactive web application or a visually engaging landing page.
+
+**Core Requirements:**
+1.  **Single File:** All HTML, CSS, and JavaScript must be in one file. No external files.
+2.  **Random & Novel Topic:** The theme of the page should be random, unique, and interesting. Think of a mini-tool, a generative art piece, a unique calculator, or a poetic visualization.
+3.  **Modern & Responsive Design:** The layout must be clean, modern, and work flawlessly on both desktop and mobile devices.
+4.  **Typography:** You MUST use only the 'Lora' and 'Young Serif' fonts. Import them using this exact Google Fonts URL inside the <head>: <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
+5.  **Concise Code:** Keep the code efficient and well-formatted. The goal is a lightweight, fast-loading page.
+
+**Output Format:**
+-   Provide ONLY the raw HTML code.
+-   Start the response directly with \`<!DOCTYPE html>\`.
+-   Do not include any explanations, comments, or markdown formatting (like \`\`\`html) around the code.
+`;
+
+            // --- UI ELEMENTS ---
+            const loader = document.getElementById('loader');
+            const contentFrame = document.getElementById('content-frame');
+            const errorMessage = document.getElementById('error-message');
+            const progressBar = document.querySelector('.progress-bar');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: PROMPT.trim() })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMsg = errorData?.error || `HTTP error! Status: ${response.status}`;
+                    throw new Error(errorMsg);
+                }
+
+                const data = await response.json();
+                const htmlContent = data.htmlContent;
+
+                if (!htmlContent) {
+                    throw new Error("Received an empty response from the API.");
+                }
+                
+                // Use srcdoc to inject the HTML content safely into the iframe
+                contentFrame.srcdoc = htmlContent;
+                
+                // Stop the progress bar animation and make it full
+                progressBar.style.animation = 'none';
+                progressBar.style.transform = 'scaleX(1)';
+
+                // Wait for the iframe to fully load its content
+                contentFrame.onload = () => {
+                     setTimeout(() => {
+                        loader.classList.add('fade-out');
+                        contentFrame.classList.add('visible');
+                        document.body.style.overflow = 'auto';
+                    }, 100); // Brief delay for a smooth transition
+                };
+
+            } catch (error) {
+                console.error('Failed to generate page:', error);
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+                progressBar.style.animationPlayState = 'paused';
+            }
+        });
+    </script>
+</body>
+</html>
+
