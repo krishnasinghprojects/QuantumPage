@@ -1,216 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Page Generator</title>
+    <title>Random</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Discover something new every time! Random generates unique, interactive web experiences powered by AI. From creative tools to artistic visualizations - explore endless possibilities at random.krishnasingh.live">
+    <meta name="keywords"
+        content="random generator, interactive web app, AI-powered content, creative tools, web experiments, Krishna Singh, generative art, random experiences">
+    <meta name="author" content="Krishna Singh">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="Random - Discover Unique Web Experiences">
+    <meta property="og:description"
+        content="AI-powered random web experiences. Discover something new every time you visit random.krishnasingh.live">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://random.krishnasingh.live">
+    <meta property="og:site_name" content="Random by Krishna Singh">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Random - Discover Unique Web Experiences">
+    <meta name="twitter:description" content="AI-powered random web experiences. Something new every visit!">
+    <meta name="twitter:creator" content="@krishnasingh">
+
+    <!-- Additional SEO Tags -->
+    <meta name="theme-color" content="#8AB4F8">
+    <meta name="msapplication-TileColor" content="#0A0A2A">
+    <link rel="canonical" href="https://random.krishnasingh.live">
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Random",
+        "description": "AI-powered random web experience generator",
+        "url": "https://random.krishnasingh.live",
+        "author": {
+            "@type": "Person",
+            "name": "Krishna Singh"
+        },
+        "applicationCategory": "Entertainment",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript"
+    }
+    </script>
+
     <style>
-        :root {
-            --dark-blue: #0A0A2A;
-            --medium-blue: #1A1A4A;
-            --light-blue: #3A3A7A;
-            --text-color-light: #E0E0E0;
-            --text-color-primary: #8AB4F8; /* A vibrant blue for highlights */
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --radial-gradient-start: #0f172a;
-            --radial-gradient-end: #050a1b;
-        }
+    :root {
+    --dark-blue: #0A0A2A;
+    --medium-blue: #1A1A4A;
+    --light-blue: #3A3A7A;
+    --text-color-light: #E0E0E0;
+    --text-color-primary: #8AB4F8; /* A vibrant blue for highlights */
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --radial-gradient-start: #0f172a;
+    --radial-gradient-end: #050a1b;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Young Serif', serif;
-            overflow: hidden; /* Hide scrollbars until content is loaded */
-            background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
-            min-height: 100vh;
-        }
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Young Serif', serif;
+    overflow: hidden; /* Hide scrollbars until content is loaded */
+    background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
+    min-height: 100vh;
+    }
 
-        /* --- LOADER STYLES --- */
-        #loader {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(15px) saturate(180%);
-            -webkit-backdrop-filter: blur(15px) saturate(180%);
-            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
-            opacity: 1;
-            visibility: visible;
-            color: var(--text-color-light);
-            text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
-        }
+    /* --- LOADER STYLES --- */
+    #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
+    opacity: 1;
+    visibility: visible;
+    color: var(--text-color-light);
+    text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
+    }
 
-        #loader.fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
+    #loader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    }
 
-        .loading-text {
-            font-family: 'Young Serif', serif;
-            font-size: 3rem;
-            font-weight: 400;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-            color: var(--text-color-primary);
-        }
+    .loading-text {
+    font-family: 'Young Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    color: var(--text-color-primary);
+    }
 
-        .loading-dots span {
-            display: inline-block;
-            animation: dot-animation 1.5s infinite ease-in-out;
-            opacity: 0;
-            font-size: 3rem;
-            color: var(--text-color-primary);
-        }
+    .loading-dots span {
+    display: inline-block;
+    animation: dot-animation 1.5s infinite ease-in-out;
+    opacity: 0;
+    font-size: 3rem;
+    color: var(--text-color-primary);
+    }
 
-        .loading-dots span:nth-child(1) { animation-delay: 0s; }
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    .loading-dots span:nth-child(1) { animation-delay: 0s; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes dot-animation {
-            0%, 20% { opacity: 0; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-10px); }
-            100% { opacity: 0; transform: translateY(0); }
-        }
+    @keyframes dot-animation {
+    0%, 20% { opacity: 0; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-10px); }
+    100% { opacity: 0; transform: translateY(0); }
+    }
 
-        /* --- PROGRESS BAR STYLES --- */
-        .progress-bar-container {
-            width: 80%;
-            max-width: 400px;
-            height: 10px;
-            background-color: var(--glass-bg);
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+    /* --- PROGRESS BAR STYLES --- */
+    .progress-bar-container {
+    width: 80%;
+    max-width: 400px;
+    height: 10px;
+    background-color: var(--glass-bg);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        .progress-bar {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
-            border-radius: 10px;
-            transform-origin: left;
-            animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
+    .progress-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
+    border-radius: 10px;
+    transform-origin: left;
+    animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
-        @keyframes load-progress {
-            from { transform: scaleX(0); }
-            to   { transform: scaleX(1); }
-        }
-        
-        /* --- API KEY FORM STYLES --- */
-        #api-key-container {
-            display: none; /* Initially hidden */
-            flex-direction: column;
-            align-items: center;
-            width: 90%;
-            max-width: 450px;
-        }
+    @keyframes load-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+    }
 
-        .api-key-title {
-            font-family: 'Young Serif', serif;
-            font-size: 2rem;
-            font-weight: 400;
-            color: var(--text-color-primary);
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    /* --- API KEY FORM STYLES --- */
+    #api-key-container {
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 450px;
+    }
 
-        #api-key-input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--glass-border);
-            background-color: var(--glass-bg);
-            color: var(--text-color-light);
-            font-family: 'Young Serif', serif;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            outline: none;
-            transition: border-color 0.3s;
-        }
+    .api-key-title {
+    font-family: 'Young Serif', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--text-color-primary);
+    margin-bottom: 20px;
+    text-align: center;
+    }
 
-        #api-key-input:focus {
-            border-color: var(--text-color-primary);
-        }
+    #api-key-input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background-color: var(--glass-bg);
+    color: var(--text-color-light);
+    font-family: 'Young Serif', serif;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    outline: none;
+    transition: border-color 0.3s;
+    }
 
-        #save-api-key-btn {
-            padding: 12px 25px;
-            border-radius: 8px;
-            border: none;
-            background-color: var(--text-color-primary);
-            font-family: 'Young Serif',serif;
-            color: var(--dark-blue);
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
-        }
+    #api-key-input:focus {
+    border-color: var(--text-color-primary);
+    }
 
-        #save-api-key-btn:hover {
-            background-color: #a7c7fa;
-            transform: translateY(-2px);
-        }
+    #save-api-key-btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--text-color-primary);
+    font-family: 'Young Serif',serif;
+    color: var(--dark-blue);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
+    }
 
-        #save-api-key-btn:active {
-            transform: translateY(0);
-        }
+    #save-api-key-btn:hover {
+    background-color: #a7c7fa;
+    transform: translateY(-2px);
+    }
 
-        #save-api-key-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+    #save-api-key-btn:active {
+    transform: translateY(0);
+    }
 
-        /* --- CONTENT FRAME --- */
-        #content-frame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            opacity: 0;
-            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
-        }
+    #save-api-key-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    }
 
-        #content-frame.visible {
-            opacity: 1;
-        }
+    /* --- CONTENT FRAME --- */
+    #content-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+    }
 
-        /* --- ERROR MESSAGE --- */
-        #error-message, #api-key-error {
-            color: #f87171;
-            text-align: center;
-            max-width: 80%;
-            margin-top: 15px;
-        }
+    #content-frame.visible {
+    opacity: 1;
+    }
 
-        #error-message {
-            font-size: 1.2rem;
-            display: none; /* Hidden by default */
-        }
+    /* --- ERROR MESSAGE --- */
+    #error-message, #api-key-error {
+    color: #f87171;
+    text-align: center;
+    max-width: 80%;
+    margin-top: 15px;
+    }
 
-        #api-key-error {
-            font-size: 0.9rem;
-            height: 20px; /* Reserve space to prevent layout shift */
-        }
-        .loading-content{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+    #error-message {
+    font-size: 1.2rem;
+    display: none; /* Hidden by default */
+    }
+
+    #api-key-error {
+    font-size: 0.9rem;
+    height: 20px; /* Reserve space to prevent layout shift */
+    }
+    .loading-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
     <div id="loader">
@@ -247,7 +299,7 @@
             const contentFrame = document.getElementById('content-frame');
             const generalErrorMessage = document.getElementById('error-message');
             const progressBar = document.querySelector('.progress-bar');
-            
+
             // --- PROMPT FOR GEMINI ---
             const PROMPT = `
 You are an elite web developer with a flair for creative and minimalist design.
@@ -319,7 +371,7 @@ Your mission is to generate a single, self-contained HTML file for a small, inte
 
             async function generatePage(apiKey) {
                 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                
+
                 try {
                     const payload = { contents: [{ parts: [{ text: PROMPT.trim() }] }] };
                     const response = await fetch(GEMINI_API_URL, {
@@ -330,12 +382,12 @@ Your mission is to generate a single, self-contained HTML file for a small, inte
 
                     if (!response.ok) {
                         if (response.status === 400 || response.status === 403) {
-                             localStorage.removeItem('geminiApiKey');
-                             loadingContent.style.display = 'none';
-                             generalErrorMessage.textContent = 'Your API Key is invalid or expired. Please enter it again.';
-                             generalErrorMessage.style.display = 'block';
-                             setTimeout(() => location.reload(), 3000);
-                             return;
+                            localStorage.removeItem('geminiApiKey');
+                            loadingContent.style.display = 'none';
+                            generalErrorMessage.textContent = 'Your API Key is invalid or expired. Please enter it again.';
+                            generalErrorMessage.style.display = 'block';
+                            setTimeout(() => location.reload(), 3000);
+                            return;
                         }
                         const errorData = await response.json();
                         throw new Error(errorData?.error?.message || `HTTP error! Status: ${response.status}`);
@@ -350,12 +402,12 @@ Your mission is to generate a single, self-contained HTML file for a small, inte
 
                     htmlContent = htmlContent.replace(/^```html\s*|```$/g, '').trim();
                     contentFrame.srcdoc = htmlContent;
-                    
+
                     progressBar.style.animation = 'none';
                     progressBar.style.transform = 'scaleX(1)';
 
                     contentFrame.onload = () => {
-                         setTimeout(() => {
+                        setTimeout(() => {
                             loader.classList.add('fade-out');
                             contentFrame.classList.add('visible');
                             document.body.style.overflow = 'auto';
@@ -372,5 +424,5 @@ Your mission is to generate a single, self-contained HTML file for a small, inte
         });
     </script>
 </body>
-</html>
 
+</html>
