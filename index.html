@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Page Generator</title>
+    <style>
+        :root {
+            --dark-blue: #0A0A2A;
+            --medium-blue: #1A1A4A;
+            --light-blue: #3A3A7A;
+            --text-color-light: #E0E0E0;
+            --text-color-primary: #8AB4F8; /* A vibrant blue for highlights */
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --radial-gradient-start: #0f172a;
+            --radial-gradient-end: #050a1b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Young Serif', serif;
+            overflow: hidden; /* Hide scrollbars until content is loaded */
+            background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
+            min-height: 100vh;
+        }
+
+        /* --- LOADER STYLES --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
+            opacity: 1;
+            visibility: visible;
+            color: var(--text-color-light);
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
+        }
+
+        #loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-text {
+            font-family: 'Young Serif', serif;
+            font-size: 3rem;
+            font-weight: 400;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            color: var(--text-color-primary);
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            animation: dot-animation 1.5s infinite ease-in-out;
+            opacity: 0;
+            font-size: 3rem;
+            color: var(--text-color-primary);
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dot-animation {
+            0%, 20% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-10px); }
+            100% { opacity: 0; transform: translateY(0); }
+        }
+
+        /* --- PROGRESS BAR STYLES --- */
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 10px;
+            background-color: var(--glass-bg);
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
+            border-radius: 10px;
+            transform-origin: left;
+            animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes load-progress {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+        
+        /* --- API KEY FORM STYLES --- */
+        #api-key-container {
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .api-key-title {
+            font-family: 'Young Serif', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #api-key-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background-color: var(--glass-bg);
+            color: var(--text-color-light);
+            font-family: 'Young Serif', serif;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #api-key-input:focus {
+            border-color: var(--text-color-primary);
+        }
+
+        #save-api-key-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--text-color-primary);
+            font-family: 'Young Serif',serif;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
+        }
+
+        #save-api-key-btn:hover {
+            background-color: #a7c7fa;
+            transform: translateY(-2px);
+        }
+
+        #save-api-key-btn:active {
+            transform: translateY(0);
+        }
+
+        #save-api-key-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- CONTENT FRAME --- */
+        #content-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+        }
+
+        #content-frame.visible {
+            opacity: 1;
+        }
+
+        /* --- ERROR MESSAGE --- */
+        #error-message, #api-key-error {
+            color: #f87171;
+            text-align: center;
+            max-width: 80%;
+            margin-top: 15px;
+        }
+
+        #error-message {
+            font-size: 1.2rem;
+            display: none; /* Hidden by default */
+        }
+
+        #api-key-error {
+            font-size: 0.9rem;
+            height: 20px; /* Reserve space to prevent layout shift */
+        }
+        .loading-content{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loading-content">
+            <div class="loading-text">
+                Loading
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+
+        <div id="api-key-container">
+            <h2 class="api-key-title">Enter Your Gemini API Key</h2>
+            <input type="password" id="api-key-input" placeholder="Paste your API key here">
+            <button id="save-api-key-btn">Save & Continue</button>
+            <p id="api-key-error"></p>
+        </div>
+
+        <div id="error-message"></div>
+    </div>
+
+    <iframe id="content-frame" title="Generated Content"></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- UI ELEMENTS ---
+            const loader = document.getElementById('loader');
+            const loadingContent = document.querySelector('.loading-content');
+            const apiKeyContainer = document.getElementById('api-key-container');
+            const apiKeyInput = document.getElementById('api-key-input');
+            const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+            const apiKeyError = document.getElementById('api-key-error');
+            const contentFrame = document.getElementById('content-frame');
+            const generalErrorMessage = document.getElementById('error-message');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            // --- PROMPT FOR GEMINI ---
+            const PROMPT = `
+You are an elite web developer with a flair for creative and minimalist design.
+Your mission is to generate a single, self-contained HTML file for a small, interactive web application or a visually engaging landing page.
+**Core Requirements:**
+1.  **Single File:** All HTML, CSS, and JavaScript must be in one file. No external files.
+2.  **Random & Novel Topic:** The theme of the page should be random, unique, and interesting. Think of a mini-tool, a generative art piece, a unique calculator, or a poetic visualization.
+3.  **Modern & Responsive Design:** The layout must be clean, modern, and work flawlessly on both desktop and mobile devices.
+4.  **Typography:** You MUST use only the 'Lora' and 'Young Serif' fonts. Import them using this exact Google Fonts URL inside the <head>: <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
+5.  **Concise Code:** Keep the code efficient and well-formatted. The goal is a lightweight, fast-loading page.
+**Output Format:**
+-   Provide ONLY the raw HTML code.
+-   Start the response directly with \`<!DOCTYPE html>\`.
+-   Do not include any explanations, comments, or markdown formatting (like \`\`\`html) around the code.
+`;
+
+            // --- MAIN LOGIC ---
+            const savedApiKey = localStorage.getItem('geminiApiKey');
+
+            if (savedApiKey) {
+                generatePage(savedApiKey);
+            } else {
+                promptForApiKey();
+            }
+
+            // --- FUNCTIONS ---
+            function promptForApiKey() {
+                loadingContent.style.display = 'none';
+                apiKeyContainer.style.display = 'flex';
+
+                saveApiKeyBtn.addEventListener('click', async () => {
+                    const key = apiKeyInput.value.trim();
+                    if (!key) {
+                        apiKeyError.textContent = 'Please enter an API key.';
+                        return;
+                    }
+
+                    saveApiKeyBtn.textContent = 'Validating...';
+                    saveApiKeyBtn.disabled = true;
+                    apiKeyError.textContent = '';
+
+                    const isValid = await validateApiKey(key);
+
+                    if (isValid) {
+                        localStorage.setItem('geminiApiKey', key);
+                        location.reload();
+                    } else {
+                        apiKeyError.textContent = 'Invalid API key. Please check and try again.';
+                        saveApiKeyBtn.textContent = 'Save & Continue';
+                        saveApiKeyBtn.disabled = false;
+                    }
+                });
+            }
+
+            async function validateApiKey(keyToTest) {
+                const VALIDATION_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyToTest}`;
+                try {
+                    const response = await fetch(VALIDATION_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: "hello" }] }] })
+                    });
+                    return response.ok;
+                } catch (error) {
+                    console.error('Validation request failed:', error);
+                    return false;
+                }
+            }
+
+            async function generatePage(apiKey) {
+                const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                
+                try {
+                    const payload = { contents: [{ parts: [{ text: PROMPT.trim() }] }] };
+                    const response = await fetch(GEMINI_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 400 || response.status === 403) {
+                             localStorage.removeItem('geminiApiKey');
+                             loadingContent.style.display = 'none';
+                             generalErrorMessage.textContent = 'Your API Key is invalid or expired. Please enter it again.';
+                             generalErrorMessage.style.display = 'block';
+                             setTimeout(() => location.reload(), 3000);
+                             return;
+                        }
+                        const errorData = await response.json();
+                        throw new Error(errorData?.error?.message || `HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    let htmlContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (!htmlContent) {
+                        throw new Error("Received an empty response from the API.");
+                    }
+
+                    htmlContent = htmlContent.replace(/^```html\s*|```$/g, '').trim();
+                    contentFrame.srcdoc = htmlContent;
+                    
+                    progressBar.style.animation = 'none';
+                    progressBar.style.transform = 'scaleX(1)';
+
+                    contentFrame.onload = () => {
+                         setTimeout(() => {
+                            loader.classList.add('fade-out');
+                            contentFrame.classList.add('visible');
+                            document.body.style.overflow = 'auto';
+                        }, 100);
+                    };
+
+                } catch (error) {
+                    console.error('Failed to generate page:', error);
+                    loadingContent.style.display = 'none';
+                    generalErrorMessage.textContent = `Error: ${error.message}`;
+                    generalErrorMessage.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
