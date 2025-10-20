@@ -4,8 +4,5 @@
     "pages/api/generate.js": {
       "maxDuration": 30
     }
-  },
-  "env": {
-    "GEMINI_API_KEY": "@GEMINI_API_KEY"
   }
 }
