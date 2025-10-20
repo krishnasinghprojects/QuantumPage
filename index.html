@@ -54,207 +54,240 @@
     </script>
 
     <style>
-    :root {
-    --dark-blue: #0A0A2A;
-    --medium-blue: #1A1A4A;
-    --light-blue: #3A3A7A;
-    --text-color-light: #E0E0E0;
-    --text-color-primary: #8AB4F8; /* A vibrant blue for highlights */
-    --glass-border: rgba(255, 255, 255, 0.18);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --radial-gradient-start: #0f172a;
-    --radial-gradient-end: #050a1b;
-    }
+        :root {
+            --dark-blue: #0A0A2A;
+            --medium-blue: #1A1A4A;
+            --light-blue: #3A3A7A;
+            --text-color-light: #E0E0E0;
+            --text-color-primary: #8AB4F8;
+            /* A vibrant blue for highlights */
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --radial-gradient-start: #0f172a;
+            --radial-gradient-end: #050a1b;
+        }
 
-    body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Young Serif', serif;
-    overflow: hidden; /* Hide scrollbars until content is loaded */
-    background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
-    min-height: 100vh;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Young Serif', serif;
+            overflow: hidden;
+            /* Hide scrollbars until content is loaded */
+            background: radial-gradient(circle at center, var(--radial-gradient-start) 0%, var(--radial-gradient-end) 100%);
+            min-height: 100vh;
+        }
 
-    /* --- LOADER STYLES --- */
-    #loader {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
-    opacity: 1;
-    visibility: visible;
-    color: var(--text-color-light);
-    text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
-    }
+        /* --- LOADER STYLES --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.7s;
+            opacity: 1;
+            visibility: visible;
+            color: var(--text-color-light);
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
+        }
 
-    #loader.fade-out {
-    opacity: 0;
-    visibility: hidden;
-    }
+        #loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-    .loading-text {
-    font-family: 'Young Serif', serif;
-    font-size: 3rem;
-    font-weight: 400;
-    margin-bottom: 25px;
-    letter-spacing: 1px;
-    color: var(--text-color-primary);
-    }
+        .loading-text {
+            font-family: 'Young Serif', serif;
+            font-size: 3rem;
+            font-weight: 400;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            color: var(--text-color-primary);
+        }
 
-    .loading-dots span {
-    display: inline-block;
-    animation: dot-animation 1.5s infinite ease-in-out;
-    opacity: 0;
-    font-size: 3rem;
-    color: var(--text-color-primary);
-    }
+        .loading-dots span {
+            display: inline-block;
+            animation: dot-animation 1.5s infinite ease-in-out;
+            opacity: 0;
+            font-size: 3rem;
+            color: var(--text-color-primary);
+        }
 
-    .loading-dots span:nth-child(1) { animation-delay: 0s; }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        .loading-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
 
-    @keyframes dot-animation {
-    0%, 20% { opacity: 0; transform: translateY(0); }
-    50% { opacity: 1; transform: translateY(-10px); }
-    100% { opacity: 0; transform: translateY(0); }
-    }
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-    /* --- PROGRESS BAR STYLES --- */
-    .progress-bar-container {
-    width: 80%;
-    max-width: 400px;
-    height: 10px;
-    background-color: var(--glass-bg);
-    border-radius: 10px;
-    border: 1px solid var(--glass-border);
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
 
-    .progress-bar {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
-    border-radius: 10px;
-    transform-origin: left;
-    animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
+        @keyframes dot-animation {
 
-    @keyframes load-progress {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-    }
+            0%,
+            20% {
+                opacity: 0;
+                transform: translateY(0);
+            }
 
-    /* --- API KEY FORM STYLES --- */
-    #api-key-container {
-    display: none; /* Initially hidden */
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 450px;
-    }
+            50% {
+                opacity: 1;
+                transform: translateY(-10px);
+            }
 
-    .api-key-title {
-    font-family: 'Young Serif', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--text-color-primary);
-    margin-bottom: 20px;
-    text-align: center;
-    }
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+        }
 
-    #api-key-input {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: 1px solid var(--glass-border);
-    background-color: var(--glass-bg);
-    color: var(--text-color-light);
-    font-family: 'Young Serif', serif;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    outline: none;
-    transition: border-color 0.3s;
-    }
+        /* --- PROGRESS BAR STYLES --- */
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 10px;
+            background-color: var(--glass-bg);
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-    #api-key-input:focus {
-    border-color: var(--text-color-primary);
-    }
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--text-color-primary), #a7c7fa);
+            border-radius: 10px;
+            transform-origin: left;
+            animation: load-progress 20s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
 
-    #save-api-key-btn {
-    padding: 12px 25px;
-    border-radius: 8px;
-    border: none;
-    background-color: var(--text-color-primary);
-    font-family: 'Young Serif',serif;
-    color: var(--dark-blue);
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
-    }
+        @keyframes load-progress {
+            from {
+                transform: scaleX(0);
+            }
 
-    #save-api-key-btn:hover {
-    background-color: #a7c7fa;
-    transform: translateY(-2px);
-    }
+            to {
+                transform: scaleX(1);
+            }
+        }
 
-    #save-api-key-btn:active {
-    transform: translateY(0);
-    }
+        /* --- API KEY FORM STYLES --- */
+        #api-key-container {
+            display: none;
+            /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 450px;
+        }
 
-    #save-api-key-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    }
+        .api-key-title {
+            font-family: 'Young Serif', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    /* --- CONTENT FRAME --- */
-    #content-frame {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    border: none;
-    opacity: 0;
-    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
-    }
+        #api-key-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background-color: var(--glass-bg);
+            color: var(--text-color-light);
+            font-family: 'Young Serif', serif;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            outline: none;
+            transition: border-color 0.3s;
+        }
 
-    #content-frame.visible {
-    opacity: 1;
-    }
+        #api-key-input:focus {
+            border-color: var(--text-color-primary);
+        }
 
-    /* --- ERROR MESSAGE --- */
-    #error-message, #api-key-error {
-    color: #f87171;
-    text-align: center;
-    max-width: 80%;
-    margin-top: 15px;
-    }
+        #save-api-key-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--text-color-primary);
+            font-family: 'Young Serif', serif;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
+        }
 
-    #error-message {
-    font-size: 1.2rem;
-    display: none; /* Hidden by default */
-    }
+        #save-api-key-btn:hover {
+            background-color: #a7c7fa;
+            transform: translateY(-2px);
+        }
 
-    #api-key-error {
-    font-size: 0.9rem;
-    height: 20px; /* Reserve space to prevent layout shift */
-    }
-    .loading-content{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    }
+        #save-api-key-btn:active {
+            transform: translateY(0);
+        }
+
+        #save-api-key-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- CONTENT FRAME --- */
+        #content-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+        }
+
+        #content-frame.visible {
+            opacity: 1;
+        }
+
+        /* --- ERROR MESSAGE --- */
+        #error-message,
+        #api-key-error {
+            color: #f87171;
+            text-align: center;
+            max-width: 80%;
+            margin-top: 15px;
+        }
+
+        #error-message {
+            font-size: 1.2rem;
+            display: none;
+            /* Hidden by default */
+        }
+
+        #api-key-error {
+            font-size: 0.9rem;
+            height: 20px;
+            /* Reserve space to prevent layout shift */
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -302,18 +335,39 @@
 
             // --- PROMPT FOR GEMINI ---
             const PROMPT = `
-You are an elite web developer with a flair for creative and minimalist design.
-Your mission is to generate a single, self-contained HTML file for a small, interactive web application or a visually engaging landing page.
+You are a visionary web developer and digital artist with expertise in creating wildly diverse, interactive experiences.
+Your mission is to generate a completely unique, self-contained HTML file that surprises and delights users with unexpected creativity.
+
+**VARIETY MANDATE - Choose ONE random category:**
+🎨 **Generative Art**: Particle systems, fractals, animated patterns, interactive canvas art, procedural landscapes, color harmonies, geometric animations
+🛠️ **Utility Tools**: Password generators, color palette creators, text manipulators, unit converters, QR code generators, markdown editors, JSON formatters
+🎮 **Mini Games**: Snake, Tetris, memory games, word puzzles, typing tests, reaction time games, riddles, trivia, simple RPG elements
+📊 **Data Visualizations**: Chart generators, progress trackers, habit builders, expense calculators, BMI tools, tip calculators, loan calculators
+🌟 **Interactive Experiences**: Virtual pet, mood tracker, daily affirmations, fortune teller, personality quiz, story generator, poem creator
+🎵 **Audio/Visual**: Beat maker, color mixer, sound visualizer, metronome, piano keyboard, drum machine, ambient sound generator
+🔬 **Educational**: Periodic table, math visualizers, physics simulations, language learning tools, coding challenges, brain teasers
+🌍 **Lifestyle**: Recipe finder, workout generator, meditation timer, plant care guide, weather dashboard, time zone converter
+🎭 **Creative Writing**: Story prompts, character generators, plot twist creators, haiku generators, mad libs, writing challenges
+🔮 **Experimental**: Glitch art generators, ASCII art creators, pixel art tools, code poetry, digital zen gardens, abstract interfaces
+
 **Core Requirements:**
-1.  **Single File:** All HTML, CSS, and JavaScript must be in one file. No external files.
-2.  **Random & Novel Topic:** The theme of the page should be random, unique, and interesting. Think of a mini-tool, a generative art piece, a unique calculator, or a poetic visualization.
-3.  **Modern & Responsive Design:** The layout must be clean, modern, and work flawlessly on both desktop and mobile devices.
-4.  **Typography:** You MUST use only the 'Lora' and 'Young Serif' fonts. Import them using this exact Google Fonts URL inside the <head>: <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
-5.  **Concise Code:** Keep the code efficient and well-formatted. The goal is a lightweight, fast-loading page.
+1. **Single File**: All HTML, CSS, and JavaScript in one file. No external dependencies except fonts.
+2. **Extreme Variety**: Each generation should feel completely different. Vary themes, color schemes, layouts, interactions, and purposes dramatically.
+3. **Rich Interactivity**: Include meaningful user interactions - clicks, drags, inputs, animations, real-time updates.
+4. **Visual Polish**: Use gradients, shadows, animations, hover effects, and modern CSS techniques for visual appeal.
+5. **Typography**: MUST use 'Lora' and 'Young Serif' fonts via: <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Young+Serif&display=swap" rel="stylesheet">
+6. **Mobile Responsive**: Perfect on all screen sizes with touch-friendly interactions.
+7. **Color Diversity**: Use varied color palettes - pastels, neons, earth tones, monochrome, gradients, dark themes, light themes.
+8. **Layout Innovation**: Experiment with grid layouts, flexbox, absolute positioning, creative navigation, unique UI patterns.
+
+**Inspiration Sources**: 
+- Behance design trends, CodePen experiments, modern web apps, mobile game UIs, data visualization libraries, generative art platforms, productivity tools, creative coding projects.
+
 **Output Format:**
--   Provide ONLY the raw HTML code.
--   Start the response directly with \`<!DOCTYPE html>\`.
--   Do not include any explanations, comments, or markdown formatting (like \`\`\`html) around the code.
+- Provide ONLY the raw HTML code
+- Start directly with \`<!DOCTYPE html>\`
+- No explanations, comments, or markdown formatting
+- Ensure the code is complete and functional
 `;
 
             // --- MAIN LOGIC ---
